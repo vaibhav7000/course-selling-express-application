@@ -7,8 +7,8 @@ const adminSchema = z.object({
 })
 
 function adminInputValidation(req, res, next) {
-    const username = req.body.username;
-    const password = req.body.password;
+    const username = req.body.username || req.headers["username"];
+    const password = req.body.password || req.headers["password"]; 
 
     const result = adminSchema.safeParse({
         username, password
@@ -16,7 +16,7 @@ function adminInputValidation(req, res, next) {
 
     if(!result.success) {
         res.status(411).json({
-            msg: "Invalid inputs send by the admin",
+            msg: "Invalid admin inputs send by the admin",
             issues: result.error.issues,
             name: result.error.name
         })

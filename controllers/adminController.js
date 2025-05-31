@@ -50,7 +50,27 @@ async function addAdminCourseToDatabase(req, res, next) {
     }
 }
 
+async function provideAllCourses(req, res, next) {
+    const { user } = req.body // destructing the object and fetching value of the user key
+
+    try {
+        // returns an array off all the courses, if no course found then return empty array
+        const allCourses = await Course.find({
+            owner: user._id
+        })
+
+        res.status(200).json({
+            allCourses
+        })
+
+        
+    } catch(err) {
+        throw err;
+    }
+}
+
 module.exports = {
     addAdminToDatabase,
-    addAdminCourseToDatabase
+    addAdminCourseToDatabase,
+    provideAllCourses
 }

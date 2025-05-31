@@ -1,6 +1,6 @@
 const express = require("express");
 const { adminInputValidation, checkUsernameAlreadyExist, checkAdminExistInDatabase } = require("../middlewares/admin.js") // no need to specify the file extension or you can. In both does not throw any error
-const { addAdminToDatabase, addAdminCourseToDatabase } = require("../controllers/adminController.js");
+const { addAdminToDatabase, addAdminCourseToDatabase, provideAllCourses } = require("../controllers/adminController.js");
 const { courseValidation } = require("../middlewares/course.js");
 
 
@@ -9,7 +9,10 @@ const router = express.Router(); // creating the mini-application and then integ
 // the main logic will be written inside the adminController.js
 router.post("/signup", adminInputValidation, checkUsernameAlreadyExist, addAdminToDatabase);
 
-router.post("/courses", checkAdminExistInDatabase, courseValidation, addAdminCourseToDatabase)
+// in case dealing with jwt adminInputValidation --> will be replaced by verifyJwt
+router.post("/courses", adminInputValidation, checkAdminExistInDatabase, courseValidation, addAdminCourseToDatabase);
+
+router.get("/courses", adminInputValidation, checkAdminExistInDatabase, provideAllCourses)
 
 
 // provide this router to app.use syntax
