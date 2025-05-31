@@ -1,8 +1,18 @@
 const express = require("express");
-const z = require("zod");
-const router = express.Router(); // creating the mini-application and then integrating with the main application using app.use() -> middleware by either providing the different routes inside the use or simply no route then the route passed in the main mini application will be used
+const { adminInputValidation, checkUsernameAlreadyExist } = require("../middlewares/admin.js") // no need to specify the file extension or you can. In both does not throw any error
+const { addAdminToDatabase } = require("../controllers/adminController.js");
 
-// when using this In the main application we sort of combine
+
+const router = express.Router(); // creating the mini-application and then integrating with the main application using app.use() -> (middleware syntax )by either providing the different routes inside the use or simply no route then the route passed in the main mini application will be used
+
+// the main logic will be written inside the adminController.js
+router.post("/signup", adminInputValidation, checkUsernameAlreadyExist, addAdminToDatabase);
+
+
+
+// provide this router to app.use syntax
+module.exports = router;
+
 
 
 
