@@ -32,14 +32,36 @@ const UserSchema = new mongoose.Schema({
 // user model
 const User = new mongoose.model('User', UserSchema);
 
+// course schema
+const CourseSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    price: Number,
+    imageLink: String,
+    owner: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Admin'
+    }
+})
+
+// course model
+const Course = new mongoose.model('Course', CourseSchema);
+
 module.exports = {
     // when exporting multiple variables / function use this syntax
     connection,
     Admin,
-    User
+    User,
+    Course
 }
 
 
 // at the end mongoose provides us the apis / functionalities to store the data in the collection in well structured format (schema based if something is up with the schema than it will throw error and does not store the data in db)
 
 // MongoDB only provides us to store data, but mongoose store the data in noSQL db in well structured format.(converting to lowercase and plural is all done by the mongoose)
+
+// In zod if we want to test something custom on the input we will refine() -> takes the callback function that will executed on the provided value passed through the safeParse or parse method available on schemas
+
+// when we have many to many relationship betwen collection / tables we define a third collection and hence store the relationship in the third collection (see with user and course)
+
+// A single user can have many courses and a single course can be takes by my users (many to many relationship)
