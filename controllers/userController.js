@@ -20,7 +20,7 @@ async function addUserInDatabase(req, res, next) {
         throw err;
     }
 }
-
+// contains all purchased and unpurchased courses
 async function getAllCoursesToShowUser(req, res, next) {
     // return all the courses to the user after doing validation of user exist in the database
     try {
@@ -75,9 +75,57 @@ async function userPurchasedCourse(req, res,next) {
     }
 }
 
+// contains all Purchased courses of user
+async function getAllPurchasedCoursesOfUser(req, res, next) {
+    const user = req.user; // dbUser
+
+    // getting all the course purchased courses of the user -> Hitting the Enrollment model
+    try {
+        const allUserCourses = await Enrollment.find({
+            user: user._id
+        })
+
+        // getting all the courses id
+        if(!allUserCourses.length) {
+            res.status(200).json({
+                msg: "You does not have any course purchased"
+            })
+            return;
+        }
+
+        try {
+            // since we want to find all course whose id is present in allUserCourses there are two syntax 
+            // sytax 1 -> simple using Promise.all
+            // const allCourses = await Promise.all(allUserCourses.map(course => Course.findById({
+            //     _id: course.course
+            // })));
+
+            const courseObjectId = allUserCourses.map(course => course.course);
+            // syntax 2 -> using the mongoose syntax
+            const allCourses = await Course.find({
+                _id: {
+                    $in: courseObjectId
+                }
+            })
+            // this will also get all the documents from the collection (Course) whose _id is present inside the allUserCourses
+
+
+            res.status(200).json({
+                allCourses
+            })
+        } catch(err) {
+            next(err);
+        }
+
+    } catch(err) {
+        next(err);
+    }
+}
+
 
 module.exports = {
     addUserInDatabase,
     getAllCoursesToShowUser,
-    userPurchasedCourse
+    userPurchasedCourse,
+    getAllPurchasedCoursesOfUser
 }
