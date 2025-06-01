@@ -70,12 +70,12 @@ function userInputValidationOtherRoutes(req, res, next) {
     next();
 }
 
-async function checkUserExistInDatabase(params) {
+async function checkUserExistInDatabase(req, res, next) {
     const username = req.headers["username"];
     const password = req.headers["password"];
 
     try {
-        const response = User.findOne({
+        const response = await User.findOne({
             username, password
         })
 

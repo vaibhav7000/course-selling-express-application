@@ -1,4 +1,4 @@
-const { User } = require("../db/db.js");
+const { User, Course } = require("../db/db.js");
 
 async function addUserInDatabase(req, res, next) {
     const username = req.body.username;
@@ -21,7 +21,22 @@ async function addUserInDatabase(req, res, next) {
     }
 }
 
+async function getAllCoursesToShowUser(req, res, next) {
+    // return all the courses to the user after doing validation of user exist in the database
+    try {
+        // if no filter is specified to "find method" than it will return all the documents present inside the collection
+        const allCourses = await Course.find() // or use find({}) both will return all the documents present inside the Course collection
+
+        res.status(200).json({
+            allCourses
+        })
+    } catch(err) {
+        throw err;
+    }
+}
+
 
 module.exports = {
     addUserInDatabase,
+    getAllCoursesToShowUser
 }
