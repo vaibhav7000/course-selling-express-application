@@ -89,7 +89,7 @@ async function checkUserExistInDatabase(req, res, next) {
         req.user = response; // attaching the user information from the db
         next();
     } catch (error) {
-        throw error;
+        next(error);
     }
 }
 

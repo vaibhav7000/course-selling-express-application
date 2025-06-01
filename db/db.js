@@ -47,12 +47,33 @@ const CourseSchema = new mongoose.Schema({
 // course model
 const Course = mongoose.model('Course', CourseSchema);
 
+// collection to represent relationship between different user and course
+const UserCourseSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        required: true, // by-default it is false and if not provided it will be set to null
+    },
+    course: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Course',
+        required: true, // by-default it is false and if not provided it will be set to null
+    },
+    enrolledAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const Enrollment = mongoose.model('Enrollment', UserCourseSchema);
+
 module.exports = {
     // when exporting multiple variables / function use this syntax
     connection,
     Admin,
     User,
-    Course
+    Course,
+    Enrollment
 }
 
 
@@ -65,3 +86,6 @@ module.exports = {
 // when we have many to many relationship betwen collection / tables we define a third collection and hence store the relationship in the third collection (see with user and course)
 
 // A single user can have many courses and a single course can be takes by my users (many to many relationship)
+
+// Date.parse(date string) -> converts the valid date string into number of milliseconds elaspsed from 1 jan 1970 UTC
+// Date.now() -> returns the number of milliseconds elasped from 1 jan 1970 UTC ( in india then timing was 1 jan 1970 5:30 am)

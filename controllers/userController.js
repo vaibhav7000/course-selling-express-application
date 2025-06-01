@@ -1,4 +1,4 @@
-const { User, Course } = require("../db/db.js");
+const { User, Course, Enrollment } = require("../db/db.js");
 
 async function addUserInDatabase(req, res, next) {
     const username = req.body.username;
@@ -37,7 +37,42 @@ async function getAllCoursesToShowUser(req, res, next) {
 
 // When dealing with many-to-many relationship between different collections / tables we define a third collection that represents the relationship (that third collection is called Join collection or pivot collection)
 async function userPurchasedCourse(req, res,next) {
+    const courseId = req.params.courseId;
+    const user = req.user;
+    // finding the course with the courseID
+    try {
+        // findById(id) is equivalent to findOne({ _id: id }).
+        const response = await Course.findById(courseId);
 
+        if(!response) {
+            res.status(411).json({
+                msg: "No course exist with this courseID"
+            })
+            return
+        }
+        const enrollmentResult = new Enrollment({
+            user: user._id,
+            course: courseId,
+        })
+
+        try {
+            // adding the relationship value in the enrollment
+            const addCourseToUser = await enrollmentResult.save();
+
+            res.status(200).json({
+                msg: "Course successfully purchased",
+                purchasedId: addCourseToUser._id,
+                coursePurchased: response
+            })
+        } catch(err) {
+            next(err); // I want the error to be reached to the express and then express calls the global-catch middle-ware function
+            // throw err -> throws the error where this async function is called and hence does not reaches to the express and express may have implemented if there is an error with the async code print and stops error
+        }
+
+        
+    } catch(err) {
+        next(err);
+    }
 }
 
 
