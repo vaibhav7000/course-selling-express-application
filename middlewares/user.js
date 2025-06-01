@@ -1,5 +1,5 @@
 const z = require("zod");
-const { User } = require("../db/db.js");
+const { User, Enrollment, Course } = require("../db/db.js");
 const userSchema = z.object({
     username: z.string().trim().min(3).regex(/^[A-Za-z0-9_]+$/), // regex that represent string should only contains alphabets, numbers and _
     password: z.string().trim().min(8).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/)
@@ -46,7 +46,7 @@ async function checkUsernameExistInDatabase(req, res, next) {
 
 
     } catch(err) {
-        throw err;
+        next(err);
     }
 }
 
@@ -93,12 +93,54 @@ async function checkUserExistInDatabase(req, res, next) {
     }
 }
 
+async function checkUserHasThisCourse(req, res, next) {
+    const user = req.user; // this user represent the dbUser
+    const courseId = req.params.courseId;
+
+    try {
+        // checking if there is any courseID with this course
+        const dbCourse = await Course.findById(courseId);
+
+        if(!dbCourse) {
+            res.status(411).json({
+                msg: "No course exist with this courseID",
+            })
+            return;
+        }
+
+        // courseID exist in the database
+        // checking if the user has already purchased the course or not
+
+        try {
+            const response = await Enrollment.find({
+                user: user._id,
+                course: dbCourse._id,
+            })
+
+            if(response) {
+                res.status(409).json({
+                    msg: "You already have the course purchased"
+                })
+
+                return
+            }
+
+            next(); // calling next means the user does not had that course and calling the userPurchasedCourse to purchase the course
+        } catch(err) {
+            next(err);
+        }
+    } catch(err) {
+        next(err);
+    }
+}
+
 
 
 // when we require this in other files, nodeJS provides us the value of the exports in this case it will be object 
 module.exports = {
-    userInputValidationSignUp,
+    userInputValidationSignUp, // data is present inside the body
     checkUsernameExistInDatabase,
-    userInputValidationOtherRoutes,
-    checkUserExistInDatabase
+    userInputValidationOtherRoutes, // data is present inside the headers
+    checkUserExistInDatabase,
+    checkUserHasThisCourse
 }

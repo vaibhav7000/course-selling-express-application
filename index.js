@@ -20,6 +20,8 @@ app.use("/user", userRouter)
 // gloabl catch middleware
 app.use(function(err, req, res, next) {
   if(err) {
+    console.log("error occured");
+    console.log(err);
     res.status(500).json({
       msg: "Something up with the server"
     })

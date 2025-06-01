@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { userInputValidationSignUp, checkUsernameExistInDatabase, userInputValidationOtherRoutes, checkUserExistInDatabase } = require("../middlewares/user.js")
+const { userInputValidationSignUp, checkUsernameExistInDatabase, userInputValidationOtherRoutes, checkUserExistInDatabase, checkUserHasThisCourse } = require("../middlewares/user.js")
 const { addUserInDatabase, getAllCoursesToShowUser, userPurchasedCourse } = require("../controllers/userController.js");
 
 
@@ -9,6 +9,6 @@ router.post("/signup", userInputValidationSignUp, checkUsernameExistInDatabase, 
 router.get("/courses", userInputValidationOtherRoutes, checkUserExistInDatabase, getAllCoursesToShowUser);
 
 // route-handler for users to purchase courses
-router.post("/courses/:courseId", userInputValidationOtherRoutes, checkUserExistInDatabase, userPurchasedCourse)
+router.post("/courses/:courseId", userInputValidationOtherRoutes, checkUserExistInDatabase, checkUserHasThisCourse, userPurchasedCourse)
 
 module.exports = router;
