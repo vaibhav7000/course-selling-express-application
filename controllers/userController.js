@@ -35,8 +35,14 @@ async function getAllCoursesToShowUser(req, res, next) {
     }
 }
 
+// When dealing with many-to-many relationship between different collections / tables we define a third collection that represents the relationship (that third collection is called Join collection or pivot collection)
+async function userPurchasedCourse(req, res,next) {
+
+}
+
 
 module.exports = {
     addUserInDatabase,
-    getAllCoursesToShowUser
+    getAllCoursesToShowUser,
+    userPurchasedCourse
 }

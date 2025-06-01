@@ -20,7 +20,7 @@ const AdminSchema = new mongoose.Schema({
 })
 
 // admin model
-const Admin = new mongoose.model('Admin', AdminSchema) // 'Admin' represent name of the model + mongoose will convert this into lowercase + plural and hence represents the "collection name" for this data
+const Admin = mongoose.model('Admin', AdminSchema) // 'Admin' represent name of the model + mongoose will convert this into lowercase + plural and hence represents the "collection name" for this data
 
 
 // user schema
@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
 })
 
 // user model
-const User = new mongoose.model('User', UserSchema);
+const User = mongoose.model('User', UserSchema);
 
 // course schema
 const CourseSchema = new mongoose.Schema({
@@ -45,7 +45,7 @@ const CourseSchema = new mongoose.Schema({
 })
 
 // course model
-const Course = new mongoose.model('Course', CourseSchema);
+const Course = mongoose.model('Course', CourseSchema);
 
 module.exports = {
     // when exporting multiple variables / function use this syntax
